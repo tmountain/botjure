@@ -31,6 +31,12 @@
 (loop [conn connection
        line (sock-read-line conn)]
 
-  (if (str-include? line "ping")
-    (privmsg conn "#mindhed" "PONG"))
+  (println line)
+
+  (if (str-startswith? line "ping :")
+    (let [resp (str "PONG " (.substring line (+ (.indexOf line ":") 1) ))]
+      (do
+        (privmsg conn "#mindhed" resp)
+        (println resp))))
+  
   (recur conn (sock-read-line conn)))

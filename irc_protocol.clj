@@ -68,6 +68,11 @@
   [string match]
   `(-> (. ~string toLowerCase) (. contains (. ~match toLowerCase))))
 
+(defmacro str-startswith? 
+  "Returns true if string starts with match or false otherwise"
+  [string match]
+  `(-> (. ~string toLowerCase) (. startsWith (. ~match toLowerCase))))
+
 (defn whois 
   "Issues a whois command on the given nick"
   [socket nick]
