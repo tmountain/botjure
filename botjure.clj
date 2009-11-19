@@ -1,17 +1,36 @@
-(ns irc-main
+(ns botjure
   (use irc-protocol))
 
 (defn identify [sock nick]
   (sock-send sock (str "USER " nick " localhost localhost :" nick))
   (sock-send sock (str "NICK " nick)))
 
+(defn sock-read-line [connection]
+  (. (:reader connection) readLine))
+
+(defn slurp-until 
+  "Reads from the connection until string is found"
+  [connection string]
+  (loop [conn connection
+         line (sock-read-line conn)]
+    (if (str-include? line string)
+      string
+      (recur conn (sock-read-line conn)))))
 
 (defn awaken
   "Wakes up the bot"
   [server channel]
   (let [sock (connect server 6667)]
-    (identify sock "binkle")
-    (join sock channel)
-    sock))
+      (identify sock "ginkle")
+      (join sock channel)
+      (slurp-until sock "join :#mindhed")
+       sock))
 
-(def conn (awaken "irc.freenode.net" "#mindhed"))
+(def connection (awaken "irc.freenode.net" "#mindhed"))
+
+(loop [conn connection
+       line (sock-read-line conn)]
+
+  (if (str-include? line "ping")
+    (privmsg conn "#mindhed" "PONG"))
+  (recur conn (sock-read-line conn)))
