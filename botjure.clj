@@ -1,5 +1,6 @@
 (ns botjure
   (:use irc-protocol)
+  (:use plugin-loader)
   (:use str-helper))
 
 (def config {:bot-name "ginkle"
@@ -14,22 +15,12 @@
 (defn sock-read-line [connection]
   (. (:reader connection) readLine))
 
-;; (defn slurp-until 
-;;   "Reads from the connection until string is found"
-;;   [connection string]
-;;   (loop [conn connection
-;;          line (sock-read-line conn)]
-;;     (if (str-include? line string)
-;;       string
-;;       (recur conn (sock-read-line conn)))))
-
 (defn awaken
   "Wakes up the bot"
   [config]
   (let [sock (connect (:server config) (:port config))]
       (identify sock (:bot-name config))
       (join sock (:channel config))
-      ;; (slurp-until sock (str "join :" (:channel config)))
        sock))
 
 (def connection (awaken config))
@@ -45,8 +36,8 @@
         (println resp)))
   
   (if (str-startswith? line ":")
-    (let [[username n type channel msg] (parse-msg line)]
-      (if (and username n type channel msg)
-        (privmsg conn "#mindhed" (str username " hailing from " n " said " msg " to " channel)))))
-  
+    (doseq [result (dispatch plugins line)]
+      (if (:payload result)
+        (privmsg conn (:to result) (:payload result)))))
+
   (recur conn (sock-read-line conn)))
