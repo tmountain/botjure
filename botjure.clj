@@ -35,8 +35,7 @@
 
   (if (str-startswith? line "ping :")
     (let [resp (str "PONG " (.substring line (+ (.indexOf line ":") 1) ))]
-      (do
         (sock-send conn resp)
-        (println resp))))
+        (println resp)))
   
   (recur conn (sock-read-line conn)))
