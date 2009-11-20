@@ -4,7 +4,8 @@
      (java.io BufferedReader)
      (java.io BufferedWriter)
      (java.io InputStreamReader)
-     (clojure.lang PersistentVector)))
+     (clojure.lang PersistentVector))
+  (:use str-helper))
 
 (defn connect
   "Connect to specified server and port returning a socket"
@@ -62,16 +63,6 @@
   (doseq [x msg]
     (sock-send socket (str "PRIVMSG " to " :" x) )
     (Thread/sleep 5000)))
-
-(defmacro str-include? 
-  "Returns true if string contains match or false otherwise"
-  [string match]
-  `(-> (. ~string toLowerCase) (. contains (. ~match toLowerCase))))
-
-(defmacro str-startswith? 
-  "Returns true if string starts with match or false otherwise"
-  [string match]
-  `(-> (. ~string toLowerCase) (. startsWith (. ~match toLowerCase))))
 
 (defn whois 
   "Issues a whois command on the given nick"

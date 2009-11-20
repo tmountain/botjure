@@ -1,8 +1,9 @@
 (ns plugins.echo)
 (declare echo)
 
-(defn echo [& args]
-  {:payload (apply str args)})
+(defn echo [arg]
+  {:payload (:msg arg),
+   :to (:to arg)})
 
 (def properties { :name      "echo",
                   :matches   :all,

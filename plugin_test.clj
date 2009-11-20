@@ -1,5 +1,5 @@
 (ns plugin-test
   (:use plugin-loader))
 
-(println (pr-str (dispatch plugins "@count")))
-(println (pr-str (dispatch plugins "holla back ya'll")))
+(println (pr-str (dispatch plugins ":jjames!n=user@li112-65.members.linode.com PRIVMSG #mindhed :@count")))
+(println (pr-str (dispatch plugins  ":jjames!n=user@li112-65.members.linode.com PRIVMSG #mindhed :a little noisy")))

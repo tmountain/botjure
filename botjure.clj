@@ -1,5 +1,6 @@
 (ns botjure
-  (use irc-protocol))
+  (:use irc-protocol)
+  (:use str-helper))
 
 (def config {:bot-name "ginkle"
              :channel  "#mindhed"
@@ -32,17 +33,6 @@
        sock))
 
 (def connection (awaken config))
-
-(defn parse-msg [line]
-  (let [[user type channel msg] (seq (.split line " " 4))]
-    (let [[username n] (seq (.split user "!"))]
-      (list
-       ; Fuck You NullPointerException
-       (if username (.substring username 1) nil)
-       n
-       type
-       channel
-       (if msg (.substring msg 1) nil)))))
 
 (loop [conn connection
        line (sock-read-line conn)]

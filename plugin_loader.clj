@@ -1,4 +1,5 @@
-(ns plugin-loader)
+(ns plugin-loader
+  (:use str-helper))
 
 (def plugins '(plugins counter echo))
 (require plugins)
@@ -17,6 +18,6 @@
                     (not (empty? (filter #(= msg %1) (:matches properties)))))
               (recur (rest plugins) msg 
                      (conj payload (merge {:plugin (:name properties)}
-                                          ((:dispatch properties) msg))))
+                                          ((:dispatch properties) (parse-msg msg)))))
               (recur (rest plugins) msg payload)))
           (recur (rest plugins) msg payload))))))
