@@ -14,15 +14,6 @@
 (defn sock-read-line [connection]
   (. (:reader connection) readLine))
 
-;; (defn slurp-until 
-;;   "Reads from the connection until string is found"
-;;   [connection string]
-;;   (loop [conn connection
-;;          line (sock-read-line conn)]
-;;     (if (str-include? line string)
-;;       string
-;;       (recur conn (sock-read-line conn)))))
-
 (defn awaken
   "Wakes up the bot"
   [config]
