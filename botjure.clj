@@ -1,6 +1,11 @@
 (ns botjure
   (use irc-protocol))
 
+(def config {:bot-name "ginkle"
+             :channel  "#mindhed"
+             :server   "irc.freenode.net"
+             :port     6667})
+
 (defn identify [sock nick]
   (sock-send sock (str "USER " nick " localhost localhost :" nick))
   (sock-send sock (str "NICK " nick)))
@@ -19,14 +24,14 @@
 
 (defn awaken
   "Wakes up the bot"
-  [server channel]
-  (let [sock (connect server 6667)]
-      (identify sock "ginkle")
+  [config]
+  (let [sock (connect (:server config) (:port config))]
+      (identify sock (:bot-name config))
       (join sock channel)
-      (slurp-until sock "join :#mindhed")
+      (slurp-until sock (str "join :" (:channel config)))
        sock))
 
-(def connection (awaken "irc.freenode.net" "#mindhed"))
+(def connection (awaken config))
 
 (loop [conn connection
        line (sock-read-line conn)]
