@@ -34,7 +34,7 @@
 (def connection (awaken config))
 
 (defn parse-msg [line]
-  (let [[user type channel msg] (seq (.split line " "))]
+  (let [[user type channel msg] (seq (.split line " " 4))]
     (let [[username n] (seq (.split user "!"))]
       (list
        ; Fuck You NullPointerException
