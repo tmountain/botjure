@@ -2,7 +2,7 @@
 (declare echo)
 
 (defn echo [& args]
-  (apply str args))
+  {:payload (apply str args)})
 
 (def properties { :name      "echo",
                   :matches   :all,

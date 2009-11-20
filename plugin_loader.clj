@@ -16,7 +16,7 @@
             (if (or (= (:matches properties) :all)
                     (not (empty? (filter #(= msg %1) (:matches properties)))))
               (recur (rest plugins) msg 
-                     (conj payload {:plugin (:name properties)
-                                    :payload ((:dispatch properties) msg)}))
+                     (conj payload (merge {:plugin (:name properties)}
+                                          ((:dispatch properties) msg))))
               (recur (rest plugins) msg payload)))
           (recur (rest plugins) msg payload))))))

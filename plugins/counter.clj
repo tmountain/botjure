@@ -6,7 +6,7 @@
 
 (def stateful-counter (make-counter 0))
 
-(defn counter [& args] (stateful-counter))
+(defn counter [& args] {:payload (stateful-counter)})
 
 (def properties { :name      "count",
                   :matches   ["@count"],
