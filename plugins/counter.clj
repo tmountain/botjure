@@ -4,7 +4,9 @@
 (defn make-counter [init-val] 
   (let [c (atom init-val)] #(swap! c inc)))
 
-(def counter (make-counter 0))
+(def stateful-counter (make-counter 0))
+
+(defn counter [& args] (stateful-counter))
 
 (def properties { :name      "count",
                   :matches   ["@count"],
