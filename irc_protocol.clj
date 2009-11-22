@@ -24,26 +24,32 @@
     (. writer write (. (str msg "\r\n") getBytes))
     (. writer flush)))
 
-(defn sock-recv-seq 
-  "Returns a lazy sequence of lines from the provided socket"
-  [socket]
-  (let [reader (:reader socket)]
-    (line-seq reader)))
-
-(defmacro sock-recv 
-  "Returns a string from the provided socket"
-  [socket]
-  `(reduce (fn [x# y#] (str x# y#)) "" (sock-recv-seq ~socket)))
+(defn sock-read-line [connection]
+  (. (:reader connection) readLine))
 
 (defn close 
   "Closes the provided socket"
   [socket]
   (. socket close))
 
+(defn identify 
+  "Identifies the bot associated with the current connection"
+  [sock nick]
+  (sock-send sock (str "USER " nick " localhost localhost :" nick))
+  (sock-send sock (str "NICK " nick)))
+
 (defn join 
   "Joins the specified channel"
   [socket channel]
   (sock-send socket (str "JOIN " channel)))
+
+(defn awaken
+  "Wakes up the bot"
+  [config]
+  (let [sock (connect (:server config) (:port config))]
+      (identify sock (:bot-name config))
+      (join sock (:channel config))
+       sock))
 
 (defn notice 
   "Issues a notice to the specified target"
@@ -64,12 +70,13 @@
     (sock-send socket (str "PRIVMSG " to " :" x) )
     (Thread/sleep 5000)))
 
-(defn whois 
-  "Issues a whois command on the given nick"
-  [socket nick]
-  (sock-send socket (str "WHOIS " nick))
-  (apply str (filter #(not (str-include? "end of whois" %1)) 
-           (sock-recv-seq socket))))
+; FIXME: add a plugin to interpret IRC system data
+; (defn whois 
+;   "Issues a whois command on the given nick"
+;   [socket nick]
+;   (sock-send socket (str "WHOIS " nick))
+;   (apply str (filter #(not (str-include? "end of whois" %1)) 
+;            (sock-recv-seq socket))))
 
 (defn disconnect
   "Disconnects from the provided socket"

@@ -1,5 +1,8 @@
 (ns str-helper)
-(defn parse-msg [line]
+
+(defn parse-msg 
+  [line]
+  "Returns a map of extracted values from a message"
   (let [[user type channel msg] (seq (.split line " " 4))]
     (let [[username n] (seq (.split user "!"))]
       {:from (if username (.substring username 1) nil),
