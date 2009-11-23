@@ -8,19 +8,17 @@
        (catch NumberFormatException nfe 0)))
 
 (defn parse-roll [msg]
-  (let [[roll sides count] (.split msg " ")]
+  (let [[to roll sides count] (.split msg " ")]
     [(parse-integer sides) (parse-integer count)]))
 
 (defn dice-roll [sides]
-  (+ (rand-int sides) 1))
+  (inc (rand-int sides)))
 
 (defn roll [arg]
-  (let [[sides count] (parse-roll (:msg arg))]
-    (loop [count count
-           payload []]
-      (if (= count 0)
-        {:payload (str "[" (str-join ", " payload) "]") :to (:to arg)}
-        (recur (- count 1) (conj payload (dice-roll sides)))))))
+  (let [[sides count] (parse-roll (:msg arg))
+        payload (for [x (range count)] (dice-roll sides))]
+        {:payload (str "[" (str-join ", " payload) "]") :to (:to arg)}))
+
 (def properties {:name      "roll",
                  :matches   ["@roll"],
                  :dispatch  roll })
