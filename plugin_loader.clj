@@ -1,7 +1,7 @@
 (ns plugin-loader
   (:use str-helper))
 
-(def plugins '(plugins.counter plugins.echo plugins.dance plugins.hello))
+(def plugins '(plugins.counter plugins.echo plugins.dance plugins.hello plugins.roll))
 (apply require plugins)
 
 (defn dispatch [config plugins msg]
