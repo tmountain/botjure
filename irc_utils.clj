@@ -57,8 +57,12 @@
   (sock-send socket (str "NOTICE " target " :" msg)))
 
 (defmulti privmsg 
-  "Sends a proviate message to the specified target"
-  (fn [socket to msg] (class msg)))
+  "Sends a private message to the specified target"
+  (fn [socket to msg] 
+    ; fix for compatibility with clojure 1.0
+    (if (vector? msg)
+      clojure.lang.PersistentVector
+      (class msg))))
 
 (defmethod privmsg String
   [socket to msg]
