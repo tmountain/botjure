@@ -1,4 +1,4 @@
-(ns irc-protocol
+(ns irc-utils
   (:import
      (java.net Socket)
      (java.io BufferedReader)

@@ -1,5 +1,5 @@
 (ns botjure
-  (:use irc-protocol)
+  (:use irc-utils)
   (:use plugin-loader)
   (:use str-helper))
 
@@ -10,7 +10,7 @@
 
 (def connection (awaken config))
 
-(defn event-loop []
+(defn event-loop [config]
   (loop [conn connection
          line (sock-read-line conn)]
 
@@ -23,10 +23,10 @@
           (println resp)))
     
     (if (str-startswith? line ":")
-      (doseq [result (dispatch plugins line)]
+      (doseq [result (dispatch config plugins line)]
         (if (:payload result)
           (privmsg conn (:to result) (:payload result)))))
 
     (recur conn (sock-read-line conn))))
 
-(event-loop)
+(event-loop config)
