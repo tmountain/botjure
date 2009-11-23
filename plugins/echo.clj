@@ -6,5 +6,5 @@
     {:payload (:msg arg), :to (:to arg)}))
 
 (def properties { :name      "echo",
-                  :matches   :all,
+                  :matches   "echo",
                   :dispatch  echo })

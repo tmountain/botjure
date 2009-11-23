@@ -5,5 +5,5 @@
   {:payload (vector ":D-<" ":D|-<" ":D/-<") :to (:to arg)})
 
 (def properties {:name      "dance",
-                 :matches   ["@dance"],
+                 :matches   ["dance"],
                  :dispatch  dance })

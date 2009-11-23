@@ -4,6 +4,13 @@
 (def plugins '(plugins.counter plugins.echo plugins.dance plugins.hello plugins.roll))
 (apply require plugins)
 
+
+(defn apply-match [msg-txt matches bot-name]
+  (or (= matches :all)
+      (let [m (concat (map #(str "@" %1) matches)
+                      (map #(str bot-name ": " %1) matches))]
+        (not (empty? (filter #(str-include? msg-txt %1) m))))))
+
 (defn dispatch [config plugins msg]
   (loop [plugins plugins
          msg (parse-msg msg)
@@ -19,9 +26,7 @@
           ; the message isn't from the bot
           ; the plugin's :matches value is within the messages text
           (if (and msg-txt msg-from (not (= msg-from (:bot-name config)))
-            (or (= (:matches properties) :all)
-                  (not (empty? (filter #(str-include? msg-txt %1)
-                                        (:matches properties))))))
+            (apply-match (:msg msg) (:matches properties) (:bot-name config)))
             (recur (rest plugins) msg 
                    (conj payload (merge {:plugin (:name properties)}
                                         ((:dispatch properties) msg))))
