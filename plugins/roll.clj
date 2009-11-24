@@ -8,7 +8,7 @@
        (catch NumberFormatException nfe 0)))
 
 (defn parse-roll [msg]
-  (let [[_ sides count] (.split msg " ")]
+  (let [[sides count] (.split msg " ")]
     [(parse-integer sides) (parse-integer count)]))
 
 (defn dice-roll [sides]

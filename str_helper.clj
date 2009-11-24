@@ -28,12 +28,18 @@
 (defn parse-msg-txt [msg]
   (if msg
     (let [msg-txt (.substring msg 1)
-          match (re-matcher #"(\S+):\s*(.*)" msg-txt)]
+          match (re-matcher #"(\S+):\s*(\S+)\s*(.*)" msg-txt)]
       (if (re-find match)
-        (let [[_ addr txt] (re-groups match)]
+        (let [[_ addr cmd txt] (re-groups match)]
           {:msg txt
+           :cmd cmd
            :addr addr})
-        {:msg msg-txt}))))
+        
+        (let [match (re-matcher #"\s*@(\S+)\s*(.*)" msg-txt)]
+          (if (re-find match)
+            (let [[_ cmd txt] (re-groups match)]
+              {:msg txt
+               :cmd cmd})))))))
 
 (defn parse-msg [line]
   "Returns a map of extracted values from a message"
