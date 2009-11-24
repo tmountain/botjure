@@ -15,7 +15,7 @@
   (inc (rand-int sides)))
 
 (defn roll [arg]
-  (let [[sides count] (parse-roll (:txt (:msg arg)))
+  (let [[sides count] (parse-roll (:msg arg))
         payload (for [x (range count)] (dice-roll sides))]
         {:payload (str "[" (str-join ", " payload) "]") :to (:to arg)}))
 
