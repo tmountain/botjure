@@ -60,15 +60,15 @@
   "Sends a private message to the specified target"
   (fn [socket to msg] 
     ; fix for compatibility with clojure 1.0
-    (if (vector? msg)
-      clojure.lang.PersistentVector
-      (class msg))))
+    (if (or (vector? msg) (seq? msg))
+      :collection
+      :string)))
 
-(defmethod privmsg String
+(defmethod privmsg :string
   [socket to msg]
   (sock-send socket (str "PRIVMSG " to " :" msg)))
 
-(defmethod privmsg PersistentVector 
+(defmethod privmsg :collection 
   [socket to msg]
   (doseq [x msg]
     (sock-send socket (str "PRIVMSG " to " :" x) )
