@@ -10,6 +10,17 @@
   [string match]
   `(-> (. ~string toLowerCase) (. startsWith (. ~match toLowerCase))))
 
+(defn squeeze [string character]
+  (reduce
+   (fn [x y]
+     (if (and (= (last (str x))
+                 character)
+              (= y character))
+       (str x)
+       (str x y)))
+   (seq string)))
+
+
 (defn parse-username-txt [username]
      (if username
        (.substring username 1)))

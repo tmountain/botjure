@@ -1,7 +1,7 @@
 (ns plugin-loader
   (:use str-helper))
 
-(def plugins '(plugins.counter plugins.echo plugins.dance plugins.hello plugins.roll))
+(def plugins '(plugins.counter plugins.echo plugins.dance plugins.hello plugins.roll plugins.roulette plugins.eightball))
 (apply require plugins)
 
 
@@ -17,7 +17,7 @@
 
 (defn dispatch [config plugins msg]
   (loop [plugins plugins
-         msg (parse-msg msg)
+         msg (merge (parse-msg msg) config)
          payload []]
     (let [plugin (first plugins)]
       (if (not plugin)
