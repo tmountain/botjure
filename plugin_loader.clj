@@ -29,7 +29,7 @@
           ; the message isn't from the bot
           ; the plugin's :matches value is within the messages text
           (if (and (:cmd msg) msg-from (not (= msg-from (:bot-name config)))
-            (apply-match msg (:matches properties) (:bot-name config)))
+                   (apply-match msg (:matches properties) (:bot-name config)))
             (recur (rest plugins) msg 
                    (conj payload (merge {:plugin (:name properties)}
                                         ((:dispatch properties) msg))))
