@@ -14,7 +14,8 @@
 
 (defn log-dispatch [arg]
   (if (= (:to arg) (:channel arg))
-    (update-the-log the-log (:msg arg) 5)))
+    (do (update-the-log the-log (:msg arg) 5)
+        {})))
 
 (def properties {:name "log"
                  :matches :all
