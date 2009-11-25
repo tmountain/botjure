@@ -31,7 +31,7 @@
           (if (and (:cmd msg) msg-from (not (= msg-from (:bot-name config)))
                    (apply-match msg (:matches properties) (:bot-name config)))
             (recur (rest plugins) msg 
-                   (conj payload (send (agent msg)
+                   (conj payload (send-off (agent msg)
                                        #(merge {:plugin (:name properties)}
                                                ((:dispatch properties) %1)))))
             (recur (rest plugins) msg payload)))))))

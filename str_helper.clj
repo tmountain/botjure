@@ -11,15 +11,17 @@
   `(-> (. ~string toLowerCase) (. startsWith (. ~match toLowerCase))))
 
 (defn squeeze [string character]
-  (reduce
-   (fn [x y]
-     (if (and (= (last (str x))
-                 character)
-              (= y character))
-       (str x)
-       (str x y)))
-   (seq string)))
-
+  (apply str
+         (reverse
+          (reduce
+           (fn [x y]
+             (if (and (= (first x)
+                         character)
+                      (= y character))
+               x
+               (conj x y)))
+           (cons '()
+                 (seq string))))))
 
 (defn parse-username-txt [username]
      (if username
