@@ -1,7 +1,7 @@
 (ns plugin-loader
   (:use str-helper))
 
-(def plugins '(plugins.counter plugins.echo plugins.dance plugins.hello plugins.roll plugins.roulette plugins.eightball))
+(def plugins '(plugins.counter plugins.echo plugins.dance plugins.hello plugins.roll plugins.roulette plugins.eightball plugins.log plugins.inspect))
 (apply require plugins)
 
 
