@@ -10,13 +10,16 @@
 
 (def connection (awaken config))
 
+(defn plugin-error [conn config]
+  (privmsg conn (:channel config) 
+           (str "Time for a plugin funeral.")))
+
 (defn event-loop [config]
   (loop [conn connection
          line (sock-read-line conn)]
 
     (println line)
 
-    ; FIXME: move to a plugin
     (if (str-startswith? line "ping :")
       (let [resp (str "PONG " (.substring line (+ (.indexOf line ":") 1) ))]
           (sock-send conn resp)
@@ -24,8 +27,13 @@
     
     (if (str-startswith? line ":")
       (doseq [result (dispatch config plugins line)]
-        (if (:payload result)
-          (privmsg conn (:to result) (:payload result)))))
+        (try
+          (await result)
+          (if (:payload @result)
+            (privmsg conn (:to @result) (:payload @result)))
+          (clear-agent-errors result)
+          (catch RuntimeException e (plugin-error conn config))
+          (catch Exception e (plugin-error conn config)))))
 
     (recur conn (sock-read-line conn))))
 
