@@ -20,8 +20,7 @@
                       (= y character))
                x
                (conj x y)))
-           (cons '()
-                 (seq string))))))
+           (cons '() (seq string))))))
 
 (defn parse-username-txt [username]
      (if username
