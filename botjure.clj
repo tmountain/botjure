@@ -10,7 +10,8 @@
 
 (def connection (awaken config))
 
-(defn plugin-error [conn config]
+(defn plugin-error [err conn config]
+  (. e printStackTrace)
   (privmsg conn (:channel config) 
            (str "Time for a plugin funeral.")))
 
@@ -32,8 +33,8 @@
           (if (:payload @result)
             (privmsg conn (:to @result) (:payload @result)))
           (clear-agent-errors result)
-          (catch RuntimeException e (plugin-error conn config))
-          (catch Exception e (plugin-error conn config)))))
+          (catch RuntimeException err (plugin-error err conn config))
+          (catch Exception err (plugin-error err conn config)))))
 
     (recur conn (sock-read-line conn))))
 
