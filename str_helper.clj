@@ -32,14 +32,16 @@
           match (re-matcher #"(\S+):\s*(\S+)\s*(.*)" msg-txt)]
       (if (re-find match)
         (let [[_ addr cmd txt] (re-groups match)]
-          {:msg txt
+          {:line msg-txt
+           :msg txt
            :cmd cmd
            :addr addr})
         
         (let [match (re-matcher #"\s*@(\S+)\s*(.*)" msg-txt)]
           (if (re-find match)
             (let [[_ cmd txt] (re-groups match)]
-              {:msg txt
+              {:line msg-txt
+               :msg txt
                :cmd cmd})))))))
 
 (defn parse-msg [line]

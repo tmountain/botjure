@@ -10,7 +10,7 @@
 
 (def connection (awaken config))
 
-(defn plugin-error [err conn config]
+(defn plugin-error [e conn config]
   (. e printStackTrace)
   (privmsg conn (:channel config) 
            (str "Time for a plugin funeral.")))

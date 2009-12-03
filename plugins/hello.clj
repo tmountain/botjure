@@ -8,19 +8,24 @@
   {:payload (str "You are most welcome, " (:from arg) "!") :to (:to arg)})
 
 (defn echo [arg]
-  {:payload (:msg arg), :to (:to arg)})
+  {:payload (:msg arg) :to (:to arg)})
 
 (defn dance [arg]
   {:payload (vector ":D-<" ":D|-<" ":D/-<") :to (:to arg)})
 
 (defn hello-dispatch [arg]
-  (let [cmd (:cmd arg)]
-    (cond (= cmd "hello") (hello arg)
-          (= cmd "thanks") (thank arg)
-          (= cmd "echo") (echo arg)
-          (= cmd "dance") (dance arg)
-          :else {})))
+  (loop [matches (:matches arg)]
+    (if (not (= (count matches) 0))
+      (let [m (first matches)]
+        (if (coll? m)
+          (recur m)
+          (cond
+            (= m "hello") (hello arg)
+            (= m "dance") (dance arg)
+            (= m "echo") (echo arg)
+            (= m "ank") (thank arg)
+            :else (recur (rest matches))))))))
 
 (def properties {:name      "hello",
-                 :matches   :all,
+                 :matches   ["hello" "dance" "echo" #"th(ank)"],
                  :dispatch  hello-dispatch })
