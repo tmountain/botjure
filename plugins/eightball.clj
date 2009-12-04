@@ -1,5 +1,4 @@
 (ns plugins.eightball)
-(declare eightball)
 
 (defn eightball [arg]
   (let [ansr ["Ask Again Later"

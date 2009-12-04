@@ -1,6 +1,5 @@
 (ns plugins.inspect)
 (use '[clojure.contrib.str-utils :only (str-join)])
-(declare inspect)
 
 (defn inspect [arg]
   (do

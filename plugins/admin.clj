@@ -1,5 +1,4 @@
 (ns plugins.admin)
-(declare admin)
 
 (def admins ["jjames" "tmountain"])
 

@@ -1,5 +1,4 @@
 (ns plugins.log)
-(declare log)
 
 (def the-log (ref []))
 

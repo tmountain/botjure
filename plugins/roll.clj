@@ -1,7 +1,5 @@
 (ns plugins.roll)
 (use '[clojure.contrib.str-utils :only (str-join)])
-(declare roll)
-
 
 (defn parse-integer [str]
   (try (Integer/parseInt str)

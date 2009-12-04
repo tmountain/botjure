@@ -1,6 +1,5 @@
 (ns plugins.roulette)
 (use '[clojure.contrib.str-utils :only (str-join)])
-(declare roulette)
 
 (def score (ref {}))
 
