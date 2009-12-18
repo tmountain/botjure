@@ -31,7 +31,7 @@
         (try
           (await result)
           (if (:payload @result)
-            (privmsg conn (:to @result) (:payload @result)))
+            ((:method @result) @result conn))
           (clear-agent-errors result)
           (catch RuntimeException err (plugin-error err conn config))
           (catch Exception err (plugin-error err conn config)))))

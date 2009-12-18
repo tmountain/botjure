@@ -74,6 +74,10 @@
     (sock-send socket (str "PRIVMSG " to " :" x) )
     (Thread/sleep 5000)))
 
+(defn privmsg-method
+  [result conn]
+  (privmsg conn (:to result) (:payload result)))
+
 ; FIXME: add a plugin to interpret IRC system data
 ; (defn whois 
 ;   "Issues a whois command on the given nick"
