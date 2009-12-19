@@ -1,5 +1,6 @@
 (ns botjure
   (:use irc-utils)
+  (:use plugin-helper)
   (:use plugin-loader)
   (:use str-helper))
 
@@ -31,7 +32,9 @@
         (try
           (await result)
           (if (:payload @result)
-            ((:method @result) @result conn))
+            (if (contains? @result :method)
+              ((:method @result) @result conn)
+              (privmsg conn @result)))
           (clear-agent-errors result)
           (catch RuntimeException err (plugin-error err conn config))
           (catch Exception err (plugin-error err conn config)))))

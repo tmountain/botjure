@@ -56,28 +56,6 @@
   [socket target msg]
   (sock-send socket (str "NOTICE " target " :" msg)))
 
-(defmulti privmsg 
-  "Sends a private message to the specified target"
-  (fn [socket to msg] 
-    ; fix for compatibility with clojure 1.0
-    (if (or (vector? msg) (seq? msg))
-      :collection
-      :string)))
-
-(defmethod privmsg :string
-  [socket to msg]
-  (sock-send socket (str "PRIVMSG " to " :" msg)))
-
-(defmethod privmsg :collection 
-  [socket to msg]
-  (doseq [x msg]
-    (sock-send socket (str "PRIVMSG " to " :" x) )
-    (Thread/sleep 5000)))
-
-(defn privmsg-method
-  [result conn]
-  (privmsg conn (:to result) (:payload result)))
-
 ; FIXME: add a plugin to interpret IRC system data
 ; (defn whois 
 ;   "Issues a whois command on the given nick"
