@@ -1,6 +1,6 @@
 (ns plugin-loader
   (:use str-helper))
-
+(use '[clojure.contrib.str-utils :only (str-join)])
 (def plugins '(plugins.hello plugins.roll plugins.roulette plugins.eightball
                              plugins.log plugins.inspect))
 (apply require plugins)
@@ -26,8 +26,10 @@
 
 (defn dispatch [config plugins msg]
   (loop [plugins plugins
-         msg (merge (parse-msg msg) config)
+         msg (merge (parse-line msg) config)
          payload []]
+    (println (str-join ", " (map #(str %1 ": " (pr-str (%1 msg)))
+                                 (keys msg))))
     (let [plugin (first plugins)]
       (if (not plugin)
         payload
