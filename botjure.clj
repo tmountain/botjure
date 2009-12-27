@@ -20,10 +20,10 @@
   (loop [conn connection
          line (sock-read-line conn)]
 
-    ;; (if (str-startswith? line "ping :")
-    ;;   (let [resp (str "PONG " (.substring line (+ (.indexOf line ":") 1) ))]
-    ;;       (sock-send conn resp)
-    ;;       (println resp)))
+    (if (str-startswith? line "ping :")
+      (let [resp (str "PONG " (.substring line (+ (.indexOf line ":") 1) ))]
+          (sock-send conn resp)
+          (println resp)))
     
     (if (str-startswith? line ":")
       (doseq [result (dispatch config plugins line)]
