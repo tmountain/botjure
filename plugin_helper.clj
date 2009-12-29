@@ -11,11 +11,13 @@
 
 (defmethod do-privmsg :string
   [socket to msg]
+  (println (str "PRIVMSG " to " :" msg))
   (sock-send socket (str "PRIVMSG " to " :" msg)))
 
 (defmethod do-privmsg :collection 
   [socket to msg]
   (doseq [x msg]
+    (println (str "PRIVMSG " to " :" x))
     (sock-send socket (str "PRIVMSG " to " :" x) )
     (Thread/sleep 5000)))
 
@@ -23,5 +25,8 @@
   [socket result]
   (do-privmsg socket (:to result) (:payload result)))
 
-
+(defn srvmsg
+  [socket result]
+  (println (:payload result))
+  (sock-send socket (:payload result)))
 

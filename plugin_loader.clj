@@ -2,7 +2,7 @@
   (:use str-helper))
 (use '[clojure.contrib.str-utils :only (str-join)])
 (def plugins '(plugins.hello plugins.roll plugins.roulette plugins.eightball
-                             plugins.log plugins.inspect))
+                             plugins.log plugins.inspect plugins.ping))
 (apply require plugins)
 
 (defn match-transform [match msg]
@@ -17,7 +17,10 @@
   "Given a plugin's match list, the msg and the bot-name execute the match strategy to dispatch for a plugin."
   (if (= matches :all)
     (seq [:all])
-    (if (= (:addr msg) bot-name)
+    (if (or (= (:msgtype msg) :server)
+            (and (= (:addr msg) bot-name)
+                 (:from msg)
+                 (not (= (:from msg) bot-name))))
       (let [m (filter #(if %1 :true)
                       (map #(match-transform %1 msg) matches))]
         (if (> (count m) 0)
@@ -28,21 +31,18 @@
   (loop [plugins plugins
          msg (merge (parse-line msg) config)
          payload []]
-    (println (str-join ", " (map #(str %1 ": " (pr-str (%1 msg)))
-                                 (keys msg))))
+
     (let [plugin (first plugins)]
       (if (not plugin)
         payload
         (let [properties (var-get (ns-resolve plugin 'properties))
-              msg-from (if (contains? msg :from) (:from msg) nil)
+;              msg-from (if (contains? msg :from) (:from msg) nil)
               matches (match-list msg (:matches properties) (:bot-name config))]
           ; in order for a plugin to dispatch, the conditions must be met:
           ; msg-txt & msg-from are non-nil values
           ; the message isn't from the bot
           ; the plugin's :matches value is within the messages text
           (if (and (:cmd msg)
-                   msg-from
-                   (not (= msg-from (:bot-name config)))
                    matches)
             (recur (rest plugins) msg 
                    (conj payload (send-off (agent (merge msg {:matches matches}))

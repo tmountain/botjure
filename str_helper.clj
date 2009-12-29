@@ -35,7 +35,7 @@
 (defn parse-action
   [matcher line]
   (let [[match user n action] (re-groups matcher)
-        parsed {:from user :n n :action action}
+        parsed {:from user :n n :action action :msgtype :event}
         msg (.substring line (count match))]
     (cond (= action "PRIVMSG")
           (merge parsed (parse-privmsg msg))
@@ -52,17 +52,28 @@
     (merge {:server server :code code :me me}
            (parse-info-str (.substring line (count match))))))
 
+(defn parse-server
+  [matcher line]
+  (let [[_ cmd txt] (re-groups matcher)
+        payload {:cmd cmd :msg txt :msgtype :server}]
+    {:cmd cmd :msg txt :msgtype :server}))
+
 (defn parse-line
   [line]
-  (if (str-startswith? line ":")
-    (let [parsed {:line line}
-          action-match (re-matcher #":(\S+)!n=(\S+)\s(\S+)\s" line)
-          info-match (re-matcher #":(\S+)\s(\d{3})\s(\S+)\s" line)]
-      (cond (re-find action-match)
-            (merge parsed (parse-action action-match line))
-            (re-find info-match)
-            (merge parsed (parse-info info-match line))
-            :else (println "whoa")))))
+  (let [parsed {:line line}
+        action-match (re-matcher #"^:(\S+)!n=(\S+)\s(\S+)\s" line)
+        info-match (re-matcher #"^:(\S+)\s(\d{3})\s(\S+)\s" line)
+        server-match (re-matcher #"^([^: ]+)\s(.+)" line)]
+    (cond (re-find action-match)
+          (merge parsed (parse-action action-match line))
+          (re-find info-match)
+          (merge parsed (parse-info info-match line))
+          (re-find server-match)
+          (merge parsed (parse-server server-match line))
+          :else (println "whoa")))
+  ;; (if (str-startswith? line ":")
+  ;;   )
+  )
 
 ;; (parse-line
 ;;  [line]
@@ -82,6 +93,25 @@
 ;;          (merge parsed
 ;;                 {:msg txt
 ;;                  :cmd cmd}))))))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ;; (parse-line-msg
 ;;  [line]
