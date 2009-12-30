@@ -2,7 +2,7 @@
   (:use str-helper))
 (use '[clojure.contrib.str-utils :only (str-join)])
 (def plugins '(plugins.hello plugins.roll plugins.roulette plugins.eightball
-                             plugins.log plugins.inspect plugins.ping))
+                             plugins.log plugins.inspect plugins.ping plugins.admin))
 (apply require plugins)
 
 (defn match-transform [match msg]

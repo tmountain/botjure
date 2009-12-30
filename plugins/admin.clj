@@ -1,4 +1,5 @@
-(ns plugins.admin)
+(ns plugins.admin
+  (:use plugin-helper))
 
 (def admins ["jjames" "tmountain"])
 
@@ -11,15 +12,18 @@
   (System/exit status))
 
 ;; No support currently for non-privmsg commands
-;; (defn opme [user]
-;;   {:admin (str "MODE " (:to arg) " +o " (:from arg))})
+(defn opme [user channel]
+  {:payload (str "MODE " channel " +o " user)
+   :method srvmsg})
 
 (defn admin [arg]
-  (if (filter #(= %1 (:from arg)) admins)
-    (cond (= (:cmd arg) "exit") (exit 0)
-          ;; (= cmd "opme") (opme (:from arg)
-          )))
+  (let [cmd (:cmd arg) user (:from arg)]
+    (if (filter #(= %1 user) admins)
+      (cond (= cmd "exit")
+            (exit 0)
+            (= cmd "opme")
+            (opme user (:to arg))))))
 
 (def properties {:name      "admin",
-                 :matches   :all,
+                 :matches   ["exit" "opme"],
                  :dispatch  admin })

@@ -19,12 +19,6 @@
 (defn event-loop [config]
   (loop [conn connection
          line (sock-read-line conn)]
-
-    ;; (if (str-startswith? line "ping :")
-    ;;   (let [resp (str "PONG " (.substring line (+ (.indexOf line ":") 1) ))]
-    ;;       (sock-send conn resp)
-    ;;       (println resp)))
-    
     (println line)
     (doseq [result (dispatch config plugins line)]
       (try
