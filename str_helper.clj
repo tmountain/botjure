@@ -70,4 +70,4 @@
           (merge parsed (parse-info info-match line))
           (re-find server-match)
           (merge parsed (parse-server server-match line))
-          :else (println "whoa"))))
+          :else (println (str "Unhandled IRC message: " line)))))
