@@ -2,8 +2,9 @@
   (:use plugin-helper))
 
 (defn ping [arg]
-  {:payload (str "PONG " (.substring (:msg arg) 1))
-   :method srvmsg})
+  (if (= (:msgtype arg) :server)
+    {:payload (str "PONG " (.substring (:msg arg) 1))
+     :method srvmsg}))
 
 (def properties {:name "ping"
                  :matches ["PING"]

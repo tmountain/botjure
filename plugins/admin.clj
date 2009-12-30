@@ -11,7 +11,6 @@
   (flush)
   (System/exit status))
 
-;; No support currently for non-privmsg commands
 (defn opme [user channel]
   {:payload (str "MODE " channel " +o " user)
    :method srvmsg})
