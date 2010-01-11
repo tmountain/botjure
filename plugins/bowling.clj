@@ -104,7 +104,7 @@
 
 (defn players-with-turn
   [frames]
-  (let [prev-round (- (current-round frames) 1)]
+  (let [prev-round (dec (current-round frames))]
     (if (= prev-round -1)
       (keys frames)
       (filter #(= prev-round (count (get frames %))) (keys frames)))))
@@ -113,7 +113,7 @@
   [frames]
   (filter #(>= (count (get frames %)) 10) (keys frames)))
 
-(defn eligable-players
+(defn eligible-players
   [player-scores]
   (let [frames (players-frames player-scores)]
     (set (concat (players-in-frame frames) (players-with-turn frames) (players-at-endgame frames)))))
@@ -148,7 +148,7 @@
   (rand-int
    (if (new-frame? player)
      11
-     (+ (pins-remaining player) 1))))
+     (inc (pins-remaining player)))))
 
 (defn do-player-status
   [player]
@@ -156,7 +156,7 @@
         pins (pins-remaining player)
         in-frame (not (new-frame? player))
         frame-count (count (get (players-frames @score-card) player))
-        frame-num (if in-frame frame-count (+ frame-count 1))]
+        frame-num (if in-frame frame-count (inc frame-count))]
     (if game-over
       (str player " has bowled their last frame for the game.")
       (str player " is on frame " frame-num " with " pins " pins remaining"))))
@@ -201,7 +201,7 @@
 (defn do-bowl
   [player player-scores]
   (let [player-cnt (count (keys player-scores))
-        eligable (eligable-players player-scores)]
+        eligible (eligible-players player-scores)]
     (cond
       (nil? (player-scores player))
       (if (game-on? (players-frames player-scores))
@@ -209,10 +209,10 @@
         (str "You have not yet joined the game, " player "."))
       (< player-cnt 2)
       (str "Sorry, " player ".  There are not enough players in the game.")
-      (and (not (empty? eligable))
-           (not (contains? eligable player)))
+      (and (not (empty? eligible))
+           (not (contains? eligible player)))
       [(str "Sorry, " player ".  It is not yet your turn.")
-       (str "Players who can take a turn: " (str-join ", " eligable))]
+       (str "Players who can take a turn: " (str-join ", " eligible))]
       (game-over?)
       (do-game-over)
       (player-game-over? player)
