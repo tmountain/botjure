@@ -247,9 +247,9 @@
   [player]
   (let [game-over (player-game-over? player)
         pins (pins-remaining player)
-        in-frame (new-frame? player)
+        in-frame (not (new-frame? player))
         frame-count (count (get (players-frames @score-card) player))
-        frame-num (if (not in-frame) (+ frame-count 1) frame-count)]
+        frame-num (if in-frame frame-count (+ frame-count 1))]
     (if game-over
       (str player " has bowled their last frame for the game.")
       (str player " is on frame " frame-num " with " pins " pins remaining"))))
