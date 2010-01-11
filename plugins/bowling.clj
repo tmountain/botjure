@@ -54,51 +54,11 @@
 (defn init-score-card []
   (dosync (ref-set score-card {})))
 
-
-
-;; (defn frames-count
-;;   [count frames]
-;;   (let [frame (first frames)]
-;;     (if (nil? frame)
-;;       count
-;;       (let [weight (if (= frame 10) 1 0.5)]
-;;         (frames-count (+ count weight) (rest frames))))))
-
-;; (defn players-frames-count [players-scores]
-;;   (into {}
-;;         (for [player (keys players-scores)]
-;;           [player (count (frames (get players-scores player)))])))
-
 (defn players-frames
   [players-scores]
   (into {}
         (for [player (keys players-scores)]
           [player (frames (get players-scores player))])))
-
-;(def player-history (ref {}))
-
-;; (defn get-history
-;;   [player]
-;;   (if (contains? @player-history player)
-;;     (get @player-history player)
-;;     []))
-
-
-;; start a thread with start-game that will auto-close the game after
-;; a period of time.  Each bowl action resets the timer.
-
-;; (defn players-turns-cnts []
-;;   (into {}
-;;         (for [player (keys @player-history)]
-;;           [player (count (get-history player))])))
-
-;; (defn players-lastframe-cnts []
-;;   (into {}
-;;         (for [player (keys @player-history)]
-;;           [player (count (nth (get-history player) 0 []))])))
-
-;; (defn sum-of-vals [x]
-;;   (reduce + (map #(val %) x)))
 
 (defn game-on? [frames]
   (if (> (reduce + (map #(count %) (vals frames))) 0)
@@ -118,45 +78,17 @@
 (defn do-current-round []
   (str "We are currently playing round " (int (current-round (frames @score-card))) "."))
 
-;; (defn players-mid-round [frames]
-;;   (let [round (current-round frames)]
-;;     (filter #(< (get frames %) round) (keys frames))))
-
-
-;(defn close-game)
-
-;; (defn update-score-card
-;;   [player turn therest]
-;;   (dosync
-;;    (alter score-card assoc player
-;;           (conj therest turn))))
-
-;; (defn new-frame?
-;;   [player]
-;;   (let [history (get-history player)
-;;         frame (first history)]
-;;     (or (= (count frame) 2) (= (first frame) 10))))
 
 (defn update-score-card
   [player score]
   (dosync
    (alter score-card assoc player (conj (get @score-card player) score))))
 
-
-;; (defn in-frame?
-;;   [count]
-;;   (> (- count (floor count)) 0))
-
 (defn in-frame?
   [frame]
   (and
    (= (count frame) 1)
    (not (= (first frame) 10))))
-
-;; (defn new-frame?
-;;   [player]
-;;   (let [count (get (players-frames-count @score-card) player)]
-;;     (not (in-frame? count))))
 
 (defn players-in-frame
   [frames]
@@ -185,31 +117,6 @@
   [player-scores]
   (let [frames (players-frames player-scores)]
     (set (concat (players-in-frame frames) (players-with-turn frames) (players-at-endgame frames)))))
-
-;; (defn players-unfinished-frame []
-;;   (for [[k v] (players-lastframe-cnts)
-;;         :when (and
-;;                (= v 1)
-;;                (not (= (first (first (get @player-history k))) 10)))]
-;;     k))
-
-;; (defn players-queued []
-;;   (let [players-cnts (players-turns-cnts)
-;;         last-round (- (current-round players-cnts) 1)]
-;;     (if (= last-round -1)
-;;       (keys @player-history)
-;;       (for [[k v] players-cnts :when (= last-round v)]
-;;         k))))
-
-
-
-;; (defn current-frame-score
-;;   [player]
-;;   (let [history (get-history player)]
-;;     (if (and (not (nil? history)) (not (nil? (first history))))
-;;       (first (first (get-history player)))
-;;       0)))
-
 
 (defn player-game-over?
   [player]
@@ -339,6 +246,3 @@
 (def properties {:name "bowling"
                  :matches ["bowl"]
                  :dispatch bowl-dispatch})
-
-
-
