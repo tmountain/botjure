@@ -29,19 +29,16 @@
   {:to (:to arg) :payload (reveal-score)})
 
 (defn do-roulette [arg]
-  (let [r (inc (rand-int 3))
-        to (:to arg)]
+  (let [r (rand-int 3)
+        result {:to arg}]
     (cond
-      (= r 1) {:to to
-               :payload (str "CLICK! " (:from arg) " got lucky.")}
-      (= r 2) (do
+      (= r 0) (assoc result :payload (str "CLICK! " (:from arg) " got lucky."))
+      (= r 1) (do
                 (if (contains? @score (:from arg))
                   (increment-score (:from arg))
                   (init-score (:from arg)))
-                {:to to
-                 :payload (str "BANG! " (:bot-name arg) " watches " (:from arg) "'s brain splatter all over the wall.")})
-      (= r 3) {:to to
-               :payload (str "The gun jammed, " (:from arg) " got lucky.")})))
+                (assoc result :payload (str "BANG! " (:bot-name arg) " watches " (:from arg) "'s brain splatter all over the wall.")))
+      (= r 2) (assoc result :payload (str "The gun jammed, " (:from arg) " got lucky.")))))
 
 (defn roulette-dispatch [arg]
   (if (= (:msg arg) "?")
