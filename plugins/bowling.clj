@@ -150,22 +150,10 @@
      11
      (inc (pins-remaining player)))))
 
-(defn do-player-status
-  [player]
-  (let [game-over (player-game-over? player)
-        pins (pins-remaining player)
-        in-frame (not (new-frame? player))
-        frame-count (count (get (players-frames @score-card) player))
-        frame-num (if in-frame frame-count (inc frame-count))]
-    (if game-over
-      (str player " has bowled their last frame for the game.")
-      (str player " is on frame " frame-num " with " pins " pins remaining"))))
-
 (defn do-join-game [player]
   (if (join-game player)
     (str "You have joined the current game, " player)
     (str "Sorry, " player ".  The game has already begun.")))
-
 
 (defn do-start-game [player]
   (start-game)
@@ -188,15 +176,31 @@
       (= num 9) (str player ": Nine Pin")
       (= num 10) (str player ": Strike!")))
 
+(defn do-player-status
+  [player]
+  (let [game-over (player-game-over? player)
+        pins (pins-remaining player)
+        in-frame (not (new-frame? player))
+        frame-count (count (get (players-frames @score-card) player))
+        frame-num (if in-frame frame-count (inc frame-count))]
+    (if game-over
+      (str player " has bowled their last frame for the game.")
+      (str player " is on frame " frame-num " with " pins " pins remaining"))))
+
+(defn do-statuses
+  [score-card]
+  (map #(do-player-status %) (keys score-card)))
+
 (defn do-score
   [player]
   (str player " current has " (score-game (get @score-card player)) " points."))
 
-(defn do-scores []
-  (map #(do-score %) (keys @score-card)))
+(defn do-player-score
+  [score-card]
+  (map #(do-score %) (keys score-card)))
 
 (defn do-game-over []
-  (concat [(str "The game has come to a close.")] (do-scores)))
+  (concat [(str "The game has come to a close.")] (do-score @score-card)))
 
 (defn do-bowl
   [player player-scores]
@@ -234,11 +238,13 @@
              (= msg "join")
              (do-join-game player)
              (= msg "score")
-             (do-score player)
+             (do-player-score player)
              (= msg "scores")
-             (do-scores)
+             (do-score @score-card)
              (= msg "status")
              (do-player-status player)
+             (= msg "statuses")
+             (do-statuses @score-card)
              :else
              (do-bowl player @score-card)))))
 
