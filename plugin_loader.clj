@@ -37,7 +37,6 @@
       (if (not plugin)
         payload
         (let [properties (var-get (ns-resolve plugin 'properties))
-;              msg-from (if (contains? msg :from) (:from msg) nil)
               matches (match-list msg (:matches properties) (:bot-name config))]
           ; in order for a plugin to dispatch, the conditions must be met:
           ; msg-txt & msg-from are non-nil values
