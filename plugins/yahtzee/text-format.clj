@@ -16,10 +16,3 @@
     (for [row (range (count table))]
       (for [i (range 0 (dec (count (nth row table))))]
         (lengthen-if (shorten-if (nth i (nth row table)) (nth i lengths)) (nth i lengths))))))
-      
-    
-    
-[["Florida" "Stupid"]
- ["Georgia" "Pumpkin"]]
-"-------- ----"
-(re-split #" " fmt)
